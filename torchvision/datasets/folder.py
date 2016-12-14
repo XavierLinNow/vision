@@ -39,6 +39,14 @@ def make_dataset(dir, class_to_idx):
 
 
 def default_loader(path):
+    from torchvision import get_image_backend
+    if get_image_backend() == 'accimage':
+        import accimage
+        try:
+            return accimage.Image(path)
+        except IOError:
+            # Potentially a decoding problem, fall back to PIL.Image
+            pass
     return Image.open(path).convert('RGB')
 
 
